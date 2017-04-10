@@ -24,20 +24,9 @@
 #include "msm_vidc_dcvs.h"
 #include "msm_vdec.h"
 
-#define IS_ALREADY_IN_STATE(__p, __d) ({\
-	int __rc = (__p >= __d);\
-	__rc; \
-})
-
-#define SUM_ARRAY(__arr, __start, __end) ({\
-		int __index;\
-		typeof((__arr)[0]) __sum = 0;\
-		for (__index = (__start); __index <= (__end); __index++) {\
-			if (__index >= 0 && __index < ARRAY_SIZE(__arr))\
-				__sum += __arr[__index];\
-		} \
-		__sum;\
-})
+#define IS_ALREADY_IN_STATE(__p, __d) (\
+	(__p >= __d)\
+)
 
 #define V4L2_EVENT_SEQ_CHANGED_SUFFICIENT \
 		V4L2_EVENT_MSM_VIDC_PORT_SETTINGS_CHANGED_SUFFICIENT
@@ -131,7 +120,7 @@ int msm_comm_g_ctrl_for_id(struct msm_vidc_inst *inst, int id)
 	};
 
 	rc = msm_comm_g_ctrl(inst, &ctrl);
-	return rc ?: ctrl.value;
+	return rc ? rc : ctrl.value;
 }
 
 static struct v4l2_ctrl **get_super_cluster(struct msm_vidc_inst *inst,
@@ -686,11 +675,13 @@ static void handle_sys_init_done(enum hal_command_response cmd, void *data)
 
 	/* This should come from sys_init_done */
 	core->resources.max_inst_count =
-		sys_init_msg->max_sessions_supported ? :
+		sys_init_msg->max_sessions_supported ?
+		sys_init_msg->max_sessions_supported :
 		MAX_SUPPORTED_INSTANCES;
 
 	core->resources.max_secure_inst_count =
-		core->resources.max_secure_inst_count ? :
+		core->resources.max_secure_inst_count ?
+		core->resources.max_secure_inst_count :
 		core->resources.max_inst_count;
 
 	if (core->id == MSM_VIDC_CORE_VENUS &&
