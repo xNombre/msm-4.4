@@ -424,6 +424,12 @@
 		interrupts = <0 0 1>, <0 8 1>;
 		qcom,cpu-affinity = <0>, <2>;
 	};
+
+	qcom,bcl {
+		qcom,ibat-monitor {
+			qcom,mitigation-freq-khz = <1113600>;
+		};
+	};
 };
 
 &soc {
