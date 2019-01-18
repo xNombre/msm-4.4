@@ -640,5 +640,16 @@ config QTI_SDIO_CLIENT
 	help
 	  Interface used for SDIO and sahara user spce application
 
+config RANDOM_READ_WAKEUP_BITS
+	int "Random read wakeup bits"
+	default 64
+	help
+		This adjusts the default read entropy size.
+
+config RANDOM_WRITE_WAKEUP_BITS
+	int "Random write wakeup bits"
+	default 896
+	help
+
 endmenu
 
