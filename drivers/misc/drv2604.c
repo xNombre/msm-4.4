@@ -305,7 +305,7 @@ static void play_effect(struct drv2604_data *pDrv2604data)
 	drv2604_change_mode(pDrv2604data, WORK_IDLE, DEV_STANDBY);
 	switch_set_state(&pDrv2604data->sw_dev, SW_STATE_IDLE);
 	pDrv2604data->vibrator_is_playing = NO;
-	wake_unlock(&pDrv2604data->wklock);
+	pm_relax(pDrv2604data->device);
 }
 
 static void vibrator_off(struct drv2604_data *pDrv2604data)
@@ -326,7 +326,7 @@ static void vibrator_off(struct drv2604_data *pDrv2604data)
 			pr_err("drv2604 vibrator_off failed\n");
 		}
 		switch_set_state(&pDrv2604data->sw_dev, SW_STATE_IDLE);
-		wake_unlock(&pDrv2604data->wklock);
+		pm_relax(pDrv2604data->device);
 	}
 }
 
@@ -374,7 +374,7 @@ static void vibrator_enable(struct timed_output_dev *dev, int value)
 	drv2604_stop(pDrv2604data);
 
 	if (value > 0) {
-		wake_lock(&pDrv2604data->wklock);
+		pm_stay_awake(pDrv2604data->device);
 
 		if (drv2604_reg_read(pDrv2604data, RATED_VOLTAGE_REG) != actuator.rated_vol) {
 			pr_debug("drv2604: Register values reset.\n");
@@ -401,7 +401,7 @@ static void vibrator_enable(struct timed_output_dev *dev, int value)
 			pDrv2604data->sequence[0] = 3;
 		else
 			pDrv2604data->sequence[0] = 2;
-		wake_lock(&pDrv2604data->wklock);
+		pm_stay_awake(pDrv2604data->device);
 		pDrv2604data->should_stop = NO;
 		drv2604_change_mode(pDrv2604data, WORK_SEQ_PLAYBACK, DEV_IDLE);
 		schedule_work(&pDrv2604data->vibrator_work);
@@ -567,7 +567,7 @@ static ssize_t dev2604_write(struct file *filp, const char *buff, size_t len, lo
 	{
 		memset(&pDrv2604data->sequence, 0, WAVEFORM_SEQUENCER_MAX);
 		if (!copy_from_user(&pDrv2604data->sequence, &buff[1], len - 1)) {
-			wake_lock(&pDrv2604data->wklock);
+			pm_stay_awake(pDrv2604data->device);
 
 			pDrv2604data->should_stop = NO;
 			drv2604_change_mode(pDrv2604data, WORK_SEQ_PLAYBACK, DEV_IDLE);
@@ -589,7 +589,7 @@ static ssize_t dev2604_write(struct file *filp, const char *buff, size_t len, lo
 		if (fw_buffer != NULL) {
 			fw.size = len - 1;
 
-			wake_lock(&pDrv2604data->wklock);
+			pm_stay_awake(pDrv2604data->device);
 			result = copy_from_user(fw_buffer, &buff[1], fw.size);
 			if (result == 0) {
 				pr_debug("%s, fwsize=%lu, f:%x, l:%x\n",
@@ -597,7 +597,7 @@ static ssize_t dev2604_write(struct file *filp, const char *buff, size_t len, lo
 				fw.data = (const unsigned char *)fw_buffer;
 				drv2604_firmware_load(&fw, (void *)pDrv2604data);
 			}
-			wake_unlock(&pDrv2604data->wklock);
+			pm_relax(pDrv2604data->device);
 
 			kfree(fw_buffer);
 		}
@@ -746,7 +746,7 @@ static int Haptics_init(struct drv2604_data *pDrv2604data)
 	pDrv2604data->timer.function = vibrator_timer_func;
 	INIT_WORK(&pDrv2604data->vibrator_work, vibrator_work_routine);
 
-	wake_lock_init(&pDrv2604data->wklock, WAKE_LOCK_SUSPEND, "vibrator");
+	device_init_wakeup(pDrv2604data->device, 0);
 	mutex_init(&pDrv2604data->lock);
 
 	return 0;
