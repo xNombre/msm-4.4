@@ -7867,6 +7867,7 @@ static struct dentry *fg_dfs_create_fs(void)
 
 	pr_debug("Creating FG_MEM debugfs file-system\n");
 	root = debugfs_create_dir(DFS_ROOT_NAME, NULL);
+#ifdef CONFIG_DEBUG_FS
 	if (IS_ERR_OR_NULL(root)) {
 		pr_err("Error creating top level directory err:%ld",
 			(long)root);
@@ -7874,6 +7875,7 @@ static struct dentry *fg_dfs_create_fs(void)
 			pr_err("debugfs is not enabled in the kernel");
 		return NULL;
 	}
+#endif
 
 	dbgfs_data.help_msg.size = strlen(dbgfs_data.help_msg.data);
 
