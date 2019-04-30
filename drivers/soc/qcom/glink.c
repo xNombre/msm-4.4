@@ -5485,7 +5485,7 @@ static int xprt_single_threaded_tx(struct glink_core_xprt_ctx *xprt_ptr,
 					ch_ptr->lcid, tx_info);
 	} while (ret == -EAGAIN);
 	if (ret < 0 || tx_info->size_remaining) {
-		GLINK_ERR_CH(ch_ptr, "%s: Error %d writing data\n",
+		GLINK_DBG_CH(ch_ptr, "%s: Error %d writing data\n",
 			     __func__, ret);
 		kfree(tx_info);
 	} else {
