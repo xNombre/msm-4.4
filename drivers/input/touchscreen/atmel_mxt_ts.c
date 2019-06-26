@@ -19,7 +19,7 @@
 #include <linux/delay.h>
 #include <linux/firmware.h>
 #include <linux/i2c.h>
-#include <linux/input/atmel_mxt_ts.h>
+#include <linux/platform_data/atmel_mxt_ts.h>
 #include <linux/debugfs.h>
 #include <linux/input/mt.h>
 #include <linux/interrupt.h>
