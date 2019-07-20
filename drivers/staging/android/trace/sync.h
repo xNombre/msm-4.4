@@ -32,6 +32,7 @@ TRACE_EVENT(sync_timeline,
 	TP_printk("name=%s value=%s", __get_str(name), __entry->value)
 );
 
+#ifdef CONFIG_SYNC_DEBUG
 TRACE_EVENT(sync_wait,
 	TP_PROTO(struct sync_fence *fence, int begin),
 
@@ -52,6 +53,7 @@ TRACE_EVENT(sync_wait,
 	TP_printk("%s name=%s state=%d", __entry->begin ? "begin" : "end",
 			__get_str(name), __entry->status)
 );
+#endif
 
 TRACE_EVENT(sync_pt,
 	TP_PROTO(struct fence *pt),
