@@ -1981,16 +1981,6 @@
 	reg = <0x86600000 0x3600000>;
 };
 
-&qusb_phy0 {
-	reg = <0x07411000 0x180>,
-		<0x00388018 0x4>;
-};
-
-&qusb_phy1 {
-	reg = <0x07412000 0x180>,
-		<0x00388014 0x4>;
-};
-
 &firmware {
 	android {
 		/delete-node/ vbmeta;
