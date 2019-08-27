@@ -243,6 +243,10 @@
 	status = "disabled";
 };
 
+&mdss_fb2 {
+	/delete-node/ qcom,cont-splash-memory;
+};
+
 &pmi8994_vadc {
 	chan@0 {
 		label = "usbin";
@@ -1778,6 +1782,8 @@
 			label = "ramoops_mem";
 			reg = <0x0 0x92900000 0x0 0x00100000>;
 		};
+
+		/delete-node/ cont_splash_mem_hdmi@bdd00000;
 	};
 };
 
