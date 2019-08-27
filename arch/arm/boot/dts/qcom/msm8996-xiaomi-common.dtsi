@@ -34,7 +34,7 @@
 };
 
 &sdcc1_ice {
-	status = "ok";
+	status = "disabled";
 };
 
 &ufsphy1 {
@@ -54,6 +54,14 @@
 };
 
 &sdhc_2 {
+	status = "disabled";
+};
+
+&pcie1 {
+	status = "disabled";
+};
+
+&pcie2 {
 	status = "disabled";
 };
 
