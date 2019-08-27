@@ -1808,11 +1808,6 @@
 			reg = <0x0 0x89c00000 0x0 0x6200000>;
 		};
 
-		ocimem_log: ocimem_log@0xb4000000 {
-			reg = <0 0xB4000000 0 0x100000>;
-			label = "ocimem_log";
-		};
-
 		ramoops_mem: ramoops_mem@92900000 {
 			label = "ramoops_mem";
 			reg = <0x0 0x92900000 0x0 0x00100000>;
