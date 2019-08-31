@@ -999,29 +999,6 @@ exit_gpio_request_failed:
 	return err;
 }
 
-static int drv2604_remove(struct i2c_client *client)
-{
-	struct drv2604_data *pDrv2604data = i2c_get_clientdata(client);
-
-	device_destroy(pDrv2604data->class, pDrv2604data->version);
-	class_destroy(pDrv2604data->class);
-	unregister_chrdev_region(pDrv2604data->version, 1);
-
-	if (pDrv2604data->PlatData.GpioTrigger)
-		gpio_free(pDrv2604data->PlatData.GpioTrigger);
-
-	if (pDrv2604data->PlatData.GpioEnable)
-		gpio_free(pDrv2604data->PlatData.GpioEnable);
-
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	unregister_early_suspend(&pDrv2604data->early_suspend);
-#endif
-
-	pr_debug(KERN_ALERT"drv2604 remove");
-
-	return 0;
-}
-
 static const struct i2c_device_id drv2604_id_table[] = {
 	{ HAPTICS_DEVICE_NAME, 0 },
 	{}
@@ -1035,7 +1012,6 @@ static struct i2c_driver drv2604_driver = {
 	},
 	.id_table = drv2604_id_table,
 	.probe = drv2604_probe,
-	.remove = drv2604_remove,
 };
 
 static int __init drv2604_init(void)
@@ -1043,13 +1019,7 @@ static int __init drv2604_init(void)
 	return i2c_add_driver(&drv2604_driver);
 }
 
-static void __exit drv2604_exit(void)
-{
-	i2c_del_driver(&drv2604_driver);
-}
-
 module_init(drv2604_init);
-module_exit(drv2604_exit);
 
 MODULE_AUTHOR("Texas Instruments Inc.");
 MODULE_DESCRIPTION("Driver for "HAPTICS_DEVICE_NAME);
