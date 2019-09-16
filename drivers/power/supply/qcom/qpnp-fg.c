@@ -469,6 +469,11 @@ struct dischg_gain_soc {
 	u32			highc_gain[VOLT_GAIN_MAX];
 };
 
+struct fg_saved_data {
+       union power_supply_propval val;
+       unsigned long last_req_expires;
+};
+
 #define THERMAL_COEFF_N_BYTES		6
 struct fg_chip {
 	struct device		*dev;
@@ -644,6 +649,8 @@ struct fg_chip {
 	bool			batt_info_restore;
 	bool			*batt_range_ocv;
 	int			*batt_range_pct;
+
+	struct fg_saved_data    saved_data[POWER_SUPPLY_PROP_BATTERY_TYPE + 1];
 };
 
 /* FG_MEMIF DEBUGFS structures */
@@ -4576,12 +4583,47 @@ static enum power_supply_property fg_power_props[] = {
 	POWER_SUPPLY_PROP_BATTERY_INFO_ID,
 };
 
+#define FG_RATE_LIM_MS (5 * MSEC_PER_SEC)
 static int fg_power_get_property(struct power_supply *psy,
 				       enum power_supply_property psp,
 				       union power_supply_propval *val)
 {
 	struct fg_chip *chip =  power_supply_get_drvdata(psy);
+	struct fg_saved_data *sd = chip->saved_data + psp;
 	bool vbatt_low_sts;
+
+	switch (psp) {
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+	case POWER_SUPPLY_PROP_BATTERY_TYPE:
+	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
+	case POWER_SUPPLY_PROP_CYCLE_COUNT_ID:
+	case POWER_SUPPLY_PROP_CHARGE_NOW:
+	case POWER_SUPPLY_PROP_CHARGE_FULL:
+	case POWER_SUPPLY_PROP_SOC_REPORTING_READY:
+	case POWER_SUPPLY_PROP_HI_POWER:
+	case POWER_SUPPLY_PROP_IGNORE_FALSE_NEGATIVE_ISENSE:
+	case POWER_SUPPLY_PROP_ENABLE_JEITA_DETECTION:
+	case POWER_SUPPLY_PROP_BATTERY_INFO:
+	case POWER_SUPPLY_PROP_BATTERY_INFO_ID:
+		/* These props don't require a fg query; don't ratelimit them */
+		break;
+	default:
+		if (!sd->last_req_expires)
+			break;
+
+		/* This takes into consideration state when battery is full
+		 * and charger is still plugged in. We want to always receive
+		 * fresh data in such case.
+		 * A case when OTG device is plugged in is skipped,
+		 * I don't feel it can drastically hurt these stats.
+		 */
+		if (chip->status == POWER_SUPPLY_STATUS_DISCHARGING &&
+			time_before(jiffies, sd->last_req_expires)) {
+			*val = sd->val;
+			return 0;
+		}
+		break;
+	}
 
 	switch (psp) {
 	case POWER_SUPPLY_PROP_BATTERY_TYPE:
@@ -4685,6 +4727,9 @@ static int fg_power_get_property(struct power_supply *psy,
 	default:
 		return -EINVAL;
 	}
+
+	sd->val = *val;
+	sd->last_req_expires = jiffies + msecs_to_jiffies(FG_RATE_LIM_MS);
 
 	return 0;
 }
