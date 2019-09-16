@@ -4590,7 +4590,7 @@ static int fg_power_get_property(struct power_supply *psy,
 {
 	struct fg_chip *chip =  power_supply_get_drvdata(psy);
 	struct fg_saved_data *sd = chip->saved_data + psp;
-	bool vbatt_low_sts;
+	bool vbatt_low_sts, ratelimited_property = true;
 
 	switch (psp) {
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
@@ -4606,6 +4606,7 @@ static int fg_power_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_BATTERY_INFO:
 	case POWER_SUPPLY_PROP_BATTERY_INFO_ID:
 		/* These props don't require a fg query; don't ratelimit them */
+		ratelimited_property = false;
 		break;
 	default:
 		if (!sd->last_req_expires)
@@ -4728,8 +4729,10 @@ static int fg_power_get_property(struct power_supply *psy,
 		return -EINVAL;
 	}
 
-	sd->val = *val;
-	sd->last_req_expires = jiffies + msecs_to_jiffies(FG_RATE_LIM_MS);
+	if(ratelimited_property) {
+		sd->val = *val;
+		sd->last_req_expires = jiffies + msecs_to_jiffies(FG_RATE_LIM_MS);
+	}
 
 	return 0;
 }
