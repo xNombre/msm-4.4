@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 4.4.189 Kernel Configuration
+# Linux/arm64 4.4.206 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -3067,6 +3067,7 @@ CONFIG_HID_MICROSOFT=y
 # CONFIG_HID_SAMSUNG is not set
 # CONFIG_HID_SONY is not set
 # CONFIG_HID_SPEEDLINK is not set
+# CONFIG_HID_STEAM is not set
 # CONFIG_HID_STEELSERIES is not set
 # CONFIG_HID_SUNPLUS is not set
 # CONFIG_HID_RMI is not set
@@ -3203,7 +3204,6 @@ CONFIG_QPNP_USB_PDPHY=y
 # CONFIG_USB_EMI26 is not set
 # CONFIG_USB_ADUTUX is not set
 # CONFIG_USB_SEVSEG is not set
-# CONFIG_USB_RIO500 is not set
 # CONFIG_USB_LEGOTOWER is not set
 # CONFIG_USB_LCD is not set
 # CONFIG_USB_LED is not set
@@ -3234,6 +3234,8 @@ CONFIG_USB_PHY=y
 # CONFIG_NOP_USB_XCEIV is not set
 # CONFIG_USB_GPIO_VBUS is not set
 # CONFIG_USB_ISP1301 is not set
+# CONFIG_USB_MSM_OTG is not set
+# CONFIG_USB_QCOM_8X16_PHY is not set
 # CONFIG_USB_MSM_HSPHY is not set
 # CONFIG_USB_MSM_SSPHY is not set
 CONFIG_USB_MSM_SSPHY_QMP=y
@@ -3576,8 +3578,6 @@ CONFIG_ION=y
 # CONFIG_ION_DUMMY is not set
 CONFIG_ION_MSM=y
 # CONFIG_ALLOC_BUFFERS_IN_4K_CHUNKS is not set
-# CONFIG_FIQ_DEBUGGER is not set
-# CONFIG_FIQ_WATCHDOG is not set
 # CONFIG_STAGING_BOARD is not set
 # CONFIG_WIMAX_GDM72XX is not set
 # CONFIG_DGNC is not set
@@ -3990,7 +3990,6 @@ CONFIG_NTFS_FS=y
 # CONFIG_NTFS_DEBUG is not set
 CONFIG_NTFS_RW=y
 
-
 #
 # Pseudo filesystems
 #
@@ -4012,7 +4011,7 @@ CONFIG_MISC_FILESYSTEMS=y
 # CONFIG_ADFS_FS is not set
 # CONFIG_AFFS_FS is not set
 CONFIG_ECRYPT_FS=y
-CONFIG_ECRYPT_FS_MESSAGING=y
+# CONFIG_ECRYPT_FS_MESSAGING is not set
 CONFIG_SDCARD_FS=y
 # CONFIG_HFS_FS is not set
 # CONFIG_HFSPLUS_FS is not set
@@ -4251,6 +4250,7 @@ CONFIG_TRACING_EVENTS_GPIO=y
 # CONFIG_TEST_KSTRTOX is not set
 # CONFIG_TEST_PRINTF is not set
 # CONFIG_TEST_RHASHTABLE is not set
+# CONFIG_TEST_HASH is not set
 # CONFIG_DMA_API_DEBUG is not set
 # CONFIG_TEST_FIRMWARE is not set
 # CONFIG_TEST_UDELAY is not set
