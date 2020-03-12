@@ -5886,7 +5886,7 @@ static int tasha_codec_enable_dec(struct snd_soc_dapm_widget *w,
 	char *widget_name = NULL;
 	char *wname;
 	int ret = 0, amic_n;
-	u16 tx_vol_ctl_reg, pwr_level_reg = 0, dec_cfg_reg, hpf_gate_reg;
+	u16 tx_vol_ctl_reg, pwr_level_reg = 0, dec_cfg_reg = 0, hpf_gate_reg;
 	u16 tx_gain_ctl_reg;
 	char *dec;
 	u8 hpf_cut_off_freq;

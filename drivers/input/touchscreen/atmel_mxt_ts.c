@@ -4549,12 +4549,12 @@ static ssize_t mxt_wakeup_mode_show(struct device *dev,
 
 static void mxt_enable_gesture_mode(struct mxt_data *data, bool enable)
 {
-	u8 t93_val, t132_val;
+	u8 t93_val, t132_val = 0x00;
 	int error;
 
 	t93_val = enable ? 0x0F : 0x0D;
-	if (data->pdata->use_ta_gpio)
-	t132_val = enable ? 0x09 : 0x00;
+	if (data->pdata->use_ta_gpio && enable)
+		t132_val = 0x09;
 	/* T93 is for double tap */
 	error = mxt_write_object(data, MXT_TOUCH_SEQUENCE_LOGGER_T93,
 				MXT_DBL_TAP_CTRL, t93_val);
@@ -6640,7 +6640,7 @@ static ssize_t mxt_selftest_read(struct file *file, char __user *buf, size_t cou
 
 static ssize_t mxt_selftest_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
 {
-	int retval;
+	int retval = 0;
 
 	if (!strncmp(buf, "short", 5)) {
 		retval = short_test();
