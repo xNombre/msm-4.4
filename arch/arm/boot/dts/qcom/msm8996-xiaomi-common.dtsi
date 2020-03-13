@@ -1792,7 +1792,8 @@
 
 		ramoops_mem: ramoops_mem@92900000 {
 			label = "ramoops_mem";
-			reg = <0x0 0x92900000 0x0 0x00100000>;
+			no-map;
+			reg = <0x0 0x92900000 0x0 0x00200000>;
 		};
 
 		/delete-node/ cont_splash_mem_hdmi@bdd00000;
@@ -1924,13 +1925,10 @@
 
 	ramoops {
 		compatible = "ramoops";
-		status = "ok";
 		memory-region = <&ramoops_mem>;
-
-		console-size = <0x0 0x00080000>;
-		pmsg-size    = <0x0 0x00040000>;
-		record-size  = <0x0 0x00008000>;
-		ftrace-size  = <0x0 0x00020000>;
+		record-size = <0 0x20000>; /* 128 KB */
+		console-size = <0 0x100000>; /* 1024 KB */
+		pmsg-size = <0 0x80000>; /* 512 KB */
 	};
 };
 
