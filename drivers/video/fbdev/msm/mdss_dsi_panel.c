@@ -425,7 +425,7 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 	* reset action would be done by touch when panel is on.
 	*/
 	if (mdss_panel_reset_skip && !pinfo->panel_dead) {
-		pr_info("%s: panel reset skip\n", __func__);
+		pr_debug("%s: panel reset skip\n", __func__);
 		return rc;
 	}
 
