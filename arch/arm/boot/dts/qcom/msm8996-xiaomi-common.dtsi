@@ -1770,6 +1770,7 @@
 	};
 
 	reserved-memory {
+		/delete-node/ removed_regions@85800000;
 		removed_regions: removed_regions@85800000 {
 			compatible = "removed-dma-pool";
 			no-map;
