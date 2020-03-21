@@ -54,8 +54,14 @@ enum arch_timer_reg {
 extern u32 arch_timer_get_rate(void);
 extern u64 (*arch_timer_read_counter)(void);
 extern struct timecounter *arch_timer_get_timecounter(void);
+extern bool arch_timer_evtstrm_available(void);
 
 #else
+
+static inline bool arch_timer_evtstrm_available(void)
+{
+	return false;
+}
 
 static inline u32 arch_timer_get_rate(void)
 {
