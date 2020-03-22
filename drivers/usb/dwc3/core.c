@@ -1238,7 +1238,7 @@ static int dwc3_probe(struct platform_device *pdev)
 	dev->dma_parms	= dev->parent->dma_parms;
 	dma_set_coherent_mask(dev, dev->parent->coherent_dma_mask);
 
-	dwc->dwc_wq = alloc_ordered_workqueue("dwc_wq", WQ_HIGHPRI);
+	dwc->dwc_wq = alloc_ordered_workqueue("dwc_wq", 0);
 	if (!dwc->dwc_wq) {
 		pr_err("%s: Unable to create workqueue dwc_wq\n", __func__);
 		return -ENOMEM;
