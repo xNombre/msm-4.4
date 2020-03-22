@@ -3169,7 +3169,7 @@ static int qpnp_adc_tm_probe(struct platform_device *pdev)
 				pr_err("thermal device register failed.\n");
 		}
 		chip->sensor[sen_idx].req_wq = alloc_workqueue(
-				"qpnp_adc_notify_wq", WQ_HIGHPRI, 0);
+				"qpnp_adc_notify_wq", 0, 0);
 		if (!chip->sensor[sen_idx].req_wq) {
 			pr_err("Requesting priority wq failed\n");
 			goto fail;
