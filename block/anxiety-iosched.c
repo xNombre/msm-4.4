@@ -1,14 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (c) 2019, Tyler Nijmeh <tylernij@gmail.com>.
+ * Anxiety I/O Scheduler
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 and
- * only version 2 as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Copyright (c) 2019, Tyler Nijmeh <tylernij@gmail.com>
  */
 
 #include <linux/blkdev.h>
@@ -18,55 +12,119 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 
-/* Max times reads can starve a write */
-#define	DEFAULT_MAX_WRITES_STARVED	(2)
+/* Batch this many synchronous requests at a time */
+#define	DEFAULT_SYNC_RATIO	(4)
+
+enum {
+	SYNC,
+	ASYNC
+};
 
 struct anxiety_data {
 	struct list_head queue[2];
-	uint16_t writes_starved;
+	uint16_t contig_syncs;
 
 	/* Tunables */
-	uint8_t max_writes_starved;
+	uint8_t sync_ratio;
 };
 
-static void anxiety_merged_requests(struct request_queue *q, struct request *rq, struct request *next)
+static inline bool anxiety_can_dispatch(struct anxiety_data *adata)
 {
-	rq_fifo_clear(next);
+	return !list_empty(&adata->queue[SYNC]) ||
+			!list_empty(&adata->queue[ASYNC]);
 }
 
-static inline struct request *anxiety_choose_request(struct anxiety_data *adata)
+static inline struct request *anxiety_next_entry(struct list_head *queue)
 {
-	/* Prioritize reads unless writes are exceedingly starved */
-	bool starved = adata->writes_starved > adata->max_writes_starved;
+	return list_first_entry(queue, struct request,
+		queuelist);
+}
 
-	/* Handle a read request */
-	if (!starved && !list_empty(&adata->queue[READ])) {
-		adata->writes_starved++;
-		return rq_entry_fifo(adata->queue[READ].next);
+static void anxiety_merged_requests(struct request_queue *q, struct request *rq,
+		struct request *next)
+{
+	list_del_init(&next->queuelist);
+}
+
+static inline int __anxiety_dispatch(struct request_queue *q,
+		struct request *rq)
+{
+	if (unlikely(!rq))
+		return -EINVAL;
+
+	list_del_init(&rq->queuelist);
+	elv_dispatch_sort(q, rq);
+
+	return 0;
+}
+
+static uint16_t anxiety_dispatch_batch(struct request_queue *q)
+{
+	struct anxiety_data *adata = q->elevator->elevator_data;
+	uint8_t i;
+	uint16_t dispatched;
+
+	/* Batch sync requests according to tunables */
+	for (i = 0; i < adata->sync_ratio; i++) {
+		if (!list_empty(&adata->queue[SYNC])) {
+			__anxiety_dispatch(q,
+				anxiety_next_entry(&adata->queue[SYNC]));
+			dispatched++;
+		}
 	}
 
-	/* Handle a write request */
-	if (!list_empty(&adata->queue[WRITE])) {
-		adata->writes_starved = 0;
-		return rq_entry_fifo(adata->queue[WRITE].next);
+	/* Submit one async request after the sync batch to avoid starvation */
+	if (!list_empty(&adata->queue[ASYNC])) {
+		__anxiety_dispatch(q,
+			anxiety_next_entry(&adata->queue[ASYNC]));
+		dispatched++;
 	}
 
-	/* If there are no requests, then there is nothing to starve */
-	adata->writes_starved = 0;
-	return NULL;
+	return dispatched;
+}
+
+static uint16_t anxiety_dispatch_drain(struct request_queue *q)
+{
+	struct anxiety_data *adata = q->elevator->elevator_data;
+	uint16_t dispatched;
+
+	/*
+	 * Fallback to non-bias request dispatching when a mandatory
+	 * queue drain has been requested.
+	 */
+	while (anxiety_can_dispatch(adata)) {
+		if (!list_empty(&adata->queue[SYNC])) {
+			__anxiety_dispatch(q,
+				anxiety_next_entry(&adata->queue[SYNC]));
+			dispatched++;
+		}
+
+		if (!list_empty(&adata->queue[ASYNC])) {
+			__anxiety_dispatch(q,
+				anxiety_next_entry(&adata->queue[ASYNC]));
+			dispatched++;
+		}
+	}
+
+	return dispatched;
 }
 
 static int anxiety_dispatch(struct request_queue *q, int force)
 {
-	struct request *rq = anxiety_choose_request(q->elevator->elevator_data);
+	struct anxiety_data *adata = q->elevator->elevator_data;
 
-	if (!rq)
+	/* Make sure we can even process any requests at all */
+	if (!anxiety_can_dispatch(adata))
 		return 0;
 
-	rq_fifo_clear(rq);
-	elv_dispatch_add_tail(rq->q, rq);
+	/*
+	 * When requested by the elevator, a full queue drain can be
+	 * performed in one scheduler dispatch.
+	 */
+	if (unlikely(force))
+		return anxiety_dispatch_drain(q);
 
-	return 1;
+	return anxiety_dispatch_batch(q);
 }
 
 static void anxiety_add_request(struct request_queue *q, struct request *rq)
@@ -77,7 +135,8 @@ static void anxiety_add_request(struct request_queue *q, struct request *rq)
 	list_add_tail(&rq->queuelist, &adata->queue[dir]);
 }
 
-static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv)
+static int anxiety_init_queue(struct request_queue *q,
+		struct elevator_type *elv)
 {
 	struct anxiety_data *adata;
 	struct elevator_queue *eq = elevator_alloc(q, elv);
@@ -96,10 +155,10 @@ static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv
 	eq->elevator_data = adata;
 
 	/* Initialize */
-	INIT_LIST_HEAD(&adata->queue[READ]);
-	INIT_LIST_HEAD(&adata->queue[WRITE]);
-	adata->writes_starved = 0;
-	adata->max_writes_starved = DEFAULT_MAX_WRITES_STARVED;
+	INIT_LIST_HEAD(&adata->queue[SYNC]);
+	INIT_LIST_HEAD(&adata->queue[ASYNC]);
+	adata->contig_syncs = 0;
+	adata->sync_ratio = DEFAULT_SYNC_RATIO;
 
 	/* Set elevator to Anxiety */
 	spin_lock_irq(q->queue_lock);
@@ -110,19 +169,20 @@ static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv
 }
 
 /* Sysfs access */
-static ssize_t anxiety_max_writes_starved_show(struct elevator_queue *e, char *page)
+static ssize_t anxiety_sync_ratio_show(struct elevator_queue *e, char *page)
 {
 	struct anxiety_data *adata = e->elevator_data;
 
-	return snprintf(page, PAGE_SIZE, "%u\n", adata->max_writes_starved);
+	return snprintf(page, PAGE_SIZE, "%u\n", adata->sync_ratio);
 }
 
-static ssize_t anxiety_max_writes_starved_store(struct elevator_queue *e, const char *page, size_t count)
+static ssize_t anxiety_sync_ratio_store(struct elevator_queue *e,
+		const char *page, size_t count)
 {
 	struct anxiety_data *adata = e->elevator_data;
 	int ret;
 
-	ret = kstrtou8(page, 0, &adata->max_writes_starved);
+	ret = kstrtou8(page, 0, &adata->sync_ratio);
 	if (ret < 0)
 		return ret;
 
@@ -130,7 +190,8 @@ static ssize_t anxiety_max_writes_starved_store(struct elevator_queue *e, const 
 }
 
 static struct elv_fs_entry anxiety_attrs[] = {
-	__ATTR(max_writes_starved, 0644, anxiety_max_writes_starved_show, anxiety_max_writes_starved_store),
+	__ATTR(sync_ratio, 0644, anxiety_sync_ratio_show,
+		anxiety_sync_ratio_store),
 	__ATTR_NULL
 };
 
