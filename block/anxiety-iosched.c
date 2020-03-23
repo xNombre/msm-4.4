@@ -92,18 +92,16 @@ static uint16_t anxiety_dispatch_drain(struct request_queue *q)
 	 * Fallback to non-bias request dispatching when a mandatory
 	 * queue drain has been requested.
 	 */
-	while (anxiety_can_dispatch(adata)) {
-		if (!list_empty(&adata->queue[SYNC])) {
-			__anxiety_dispatch(q,
-				anxiety_next_entry(&adata->queue[SYNC]));
-			dispatched++;
-		}
+	while (!list_empty(&adata->queue[SYNC])) {
+		__anxiety_dispatch(q,
+			anxiety_next_entry(&adata->queue[SYNC]));
+		dispatched++;
+	}
 
-		if (!list_empty(&adata->queue[ASYNC])) {
-			__anxiety_dispatch(q,
-				anxiety_next_entry(&adata->queue[ASYNC]));
-			dispatched++;
-		}
+	while (!list_empty(&adata->queue[ASYNC])) {
+		__anxiety_dispatch(q,
+			anxiety_next_entry(&adata->queue[ASYNC]));
+		dispatched++;
 	}
 
 	return dispatched;
