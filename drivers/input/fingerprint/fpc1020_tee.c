@@ -549,7 +549,7 @@ static int fpc1020_probe(struct platform_device *pdev)
 
 	ret = devm_request_threaded_irq(dev, gpio_to_irq(f->irq_gpio),
 			NULL, fpc1020_irq_handler,
-			IRQF_TRIGGER_RISING | IRQF_ONESHOT | IRQF_NO_SUSPEND,
+			IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 			dev_name(dev), f);
 	if (ret) {
 		dev_err(dev, "Could not request irq, ret: %d\n", ret);
