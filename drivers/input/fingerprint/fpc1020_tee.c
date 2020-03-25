@@ -49,7 +49,6 @@ struct fpc1020_data {
 	struct device *dev;
 	struct notifier_block fb_notif;
 	struct completion irq_sent;
-	struct work_struct pm_work;
 	struct pinctrl         *ts_pinctrl;
 	struct pinctrl_state   *gpio_state_active;
 	struct pinctrl_state   *gpio_state_suspend;
@@ -306,29 +305,6 @@ static const struct attribute_group fpc1020_attr_group = {
 	.attrs = attributes,
 };
 
-static void set_fingerprint_hal_nice(int nice)
-{
-	return;
-}
-
-static void fpc1020_suspend_resume(struct work_struct *work)
-{
-	struct fpc1020_data *f = container_of(work, typeof(*f), pm_work);
-
-	/* Escalate fingerprintd priority when screen is off */
-	if (f->screen_off) {
-		if(f->wakeup_enabled)
-			set_fingerprint_hal_nice(MIN_NICE);
-		else
-			set_fpc_irq(f, false);
-	} else {
-		set_fpc_irq(f, true);
-		set_fingerprint_hal_nice(0);
-	}
-
-	sysfs_notify(&f->dev->kobj, NULL, dev_attr_screen_state.attr.name);
-}
-
 static int fb_notifier_callback(struct notifier_block *nb,
 		unsigned long action, void *data)
 {
@@ -340,13 +316,9 @@ static int fb_notifier_callback(struct notifier_block *nb,
 		return 0;
 
 	if (*blank == FB_BLANK_UNBLANK) {
-		cancel_work_sync(&f->pm_work);
 		f->screen_off = false;
-		queue_work(system_highpri_wq, &f->pm_work);
 	} else if (*blank == FB_BLANK_POWERDOWN) {
-		cancel_work_sync(&f->pm_work);
 		f->screen_off = true;
-		queue_work(system_highpri_wq, &f->pm_work);
 	}
 
 	return 0;
@@ -538,7 +510,6 @@ static int fpc1020_probe(struct platform_device *pdev)
 		goto err1;
 
 	spin_lock_init(&f->irq_lock);
-	INIT_WORK(&f->pm_work, fpc1020_suspend_resume);
 	init_completion(&f->irq_sent);
 
 	ret = sysfs_create_group(&dev->kobj, &fpc1020_attr_group);
