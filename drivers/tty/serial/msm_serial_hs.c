@@ -706,7 +706,7 @@ static void msm_serial_debugfs_init(struct msm_hs_port *msm_uport,
 						&loopback_enable_fops);
 
 	if (IS_ERR_OR_NULL(msm_uport->loopback_dir))
-		MSM_HS_ERR("%s(): Cannot create loopback.%d debug entry",
+		MSM_HS_ERR("%s(): Cannot create loopback.%d debug entry\n",
 							__func__, id);
 }
 
