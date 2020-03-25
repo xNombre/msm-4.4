@@ -8992,7 +8992,7 @@ static int qseecom_probe(struct platform_device *pdev)
 		if (!qseecom.no_clock_support) {
 			pr_info("qseecom clocks handled by other subsystem\n");
 		} else {
-			pr_info("no-clock-support=0x%x",
+			pr_info("no-clock-support=0x%x\n",
 			qseecom.no_clock_support);
 		}
 
