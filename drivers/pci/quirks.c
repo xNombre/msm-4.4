@@ -28,6 +28,8 @@
 #include <asm/dma.h>	/* isa_dma_bridge_buggy */
 #include "pci.h"
 
+#ifndef CONFIG_PCI_MSM
+
 /*
  * Decoding should be disabled for a PCI device during BAR sizing to avoid
  * conflict. But doing so may cause problems on host bridge and perhaps other
@@ -3015,36 +3017,6 @@ static void quirk_intel_ntb(struct pci_dev *dev)
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0e08, quirk_intel_ntb);
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0e0d, quirk_intel_ntb);
 
-static ktime_t fixup_debug_start(struct pci_dev *dev,
-				 void (*fn)(struct pci_dev *dev))
-{
-	ktime_t calltime = ktime_set(0, 0);
-
-	dev_dbg(&dev->dev, "calling %pF\n", fn);
-	if (initcall_debug) {
-		pr_debug("calling  %pF @ %i for %s\n",
-			 fn, task_pid_nr(current), dev_name(&dev->dev));
-		calltime = ktime_get();
-	}
-
-	return calltime;
-}
-
-static void fixup_debug_report(struct pci_dev *dev, ktime_t calltime,
-			       void (*fn)(struct pci_dev *dev))
-{
-	ktime_t delta, rettime;
-	unsigned long long duration;
-
-	if (initcall_debug) {
-		rettime = ktime_get();
-		delta = ktime_sub(rettime, calltime);
-		duration = (unsigned long long) ktime_to_ns(delta) >> 10;
-		pr_debug("pci fixup %pF returned after %lld usecs for %s\n",
-			 fn, duration, dev_name(&dev->dev));
-	}
-}
-
 /*
  * Some BIOS implementations leave the Intel GPU interrupts enabled,
  * even though no one is handling them (f.e. i915 driver is never loaded).
@@ -3275,6 +3247,38 @@ DECLARE_PCI_FIXUP_RESUME_EARLY(PCI_VENDOR_ID_INTEL, 0x156d,
 			       quirk_apple_wait_for_thunderbolt);
 #endif
 
+#endif /* CONFIG_PCI_MSM */
+
+static ktime_t fixup_debug_start(struct pci_dev *dev,
+				 void (*fn)(struct pci_dev *dev))
+{
+	ktime_t calltime = ktime_set(0, 0);
+
+	dev_dbg(&dev->dev, "calling %pF\n", fn);
+	if (initcall_debug) {
+		pr_debug("calling  %pF @ %i for %s\n",
+			 fn, task_pid_nr(current), dev_name(&dev->dev));
+		calltime = ktime_get();
+	}
+
+	return calltime;
+}
+
+static void fixup_debug_report(struct pci_dev *dev, ktime_t calltime,
+			       void (*fn)(struct pci_dev *dev))
+{
+	ktime_t delta, rettime;
+	unsigned long long duration;
+
+	if (initcall_debug) {
+		rettime = ktime_get();
+		delta = ktime_sub(rettime, calltime);
+		duration = (unsigned long long) ktime_to_ns(delta) >> 10;
+		pr_debug("pci fixup %pF returned after %lld usecs for %s\n",
+			 fn, duration, dev_name(&dev->dev));
+	}
+}
+
 static void pci_do_fixups(struct pci_dev *dev, struct pci_fixup *f,
 			  struct pci_fixup *end)
 {
@@ -3410,6 +3414,83 @@ static int __init pci_apply_final_quirks(void)
 }
 
 fs_initcall_sync(pci_apply_final_quirks);
+
+#ifndef CONFIG_PCI_MSM
+/*
+ * These device-specific reset methods are here rather than in a driver
+ * because when a host assigns a device to a guest VM, the host may need
+ * to reset the device but probably doesn't have a driver for it.
+ */
+int pci_dev_specific_reset(struct pci_dev *dev, int probe)
+{
+	const struct pci_dev_reset_methods *i;
+
+	for (i = pci_dev_reset_methods; i->reset; i++) {
+		if ((i->vendor == dev->vendor ||
+		     i->vendor == (u16)PCI_ANY_ID) &&
+		    (i->device == dev->device ||
+		     i->device == (u16)PCI_ANY_ID))
+			return i->reset(dev, probe);
+	}
+
+	return -ENOTTY;
+}
+
+int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags)
+{
+	const struct pci_dev_acs_enabled *i;
+	int ret;
+
+	/*
+	 * Allow devices that do not expose standard PCIe ACS capabilities
+	 * or control to indicate their support here.  Multi-function express
+	 * devices which do not allow internal peer-to-peer between functions,
+	 * but do not implement PCIe ACS may wish to return true here.
+	 */
+	for (i = pci_dev_acs_enabled; i->acs_enabled; i++) {
+		if ((i->vendor == dev->vendor ||
+		     i->vendor == (u16)PCI_ANY_ID) &&
+		    (i->device == dev->device ||
+		     i->device == (u16)PCI_ANY_ID)) {
+			ret = i->acs_enabled(dev, acs_flags);
+			if (ret >= 0)
+				return ret;
+		}
+	}
+
+	return -ENOTTY;
+}
+
+void pci_dev_specific_enable_acs(struct pci_dev *dev)
+{
+	const struct pci_dev_enable_acs *i;
+	int ret;
+
+	for (i = pci_dev_enable_acs; i->enable_acs; i++) {
+		if ((i->vendor == dev->vendor ||
+		     i->vendor == (u16)PCI_ANY_ID) &&
+		    (i->device == dev->device ||
+		     i->device == (u16)PCI_ANY_ID)) {
+			ret = i->enable_acs(dev);
+			if (ret >= 0)
+				return;
+		}
+	}
+}
+#else
+inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
+{
+	return -ENOTTY;
+}
+inline int pci_dev_specific_acs_enabled(struct pci_dev *dev,
+					       u16 acs_flags)
+{
+	return -ENOTTY;
+}
+inline void pci_dev_specific_enable_acs(struct pci_dev *dev) { }
+#endif
+
+#ifndef CONFIG_PCI_MSM
 
 /*
  * Followings are device-specific reset methods which can be used to
@@ -3578,26 +3659,6 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
 		reset_chelsio_generic_dev },
 	{ 0 }
 };
-
-/*
- * These device-specific reset methods are here rather than in a driver
- * because when a host assigns a device to a guest VM, the host may need
- * to reset the device but probably doesn't have a driver for it.
- */
-int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-{
-	const struct pci_dev_reset_methods *i;
-
-	for (i = pci_dev_reset_methods; i->reset; i++) {
-		if ((i->vendor == dev->vendor ||
-		     i->vendor == (u16)PCI_ANY_ID) &&
-		    (i->device == dev->device ||
-		     i->device == (u16)PCI_ANY_ID))
-			return i->reset(dev, probe);
-	}
-
-	return -ENOTTY;
-}
 
 static void quirk_dma_func0_alias(struct pci_dev *dev)
 {
@@ -4012,31 +4073,6 @@ static const struct pci_dev_acs_enabled {
 	{ 0 }
 };
 
-int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags)
-{
-	const struct pci_dev_acs_enabled *i;
-	int ret;
-
-	/*
-	 * Allow devices that do not expose standard PCIe ACS capabilities
-	 * or control to indicate their support here.  Multi-function express
-	 * devices which do not allow internal peer-to-peer between functions,
-	 * but do not implement PCIe ACS may wish to return true here.
-	 */
-	for (i = pci_dev_acs_enabled; i->acs_enabled; i++) {
-		if ((i->vendor == dev->vendor ||
-		     i->vendor == (u16)PCI_ANY_ID) &&
-		    (i->device == dev->device ||
-		     i->device == (u16)PCI_ANY_ID)) {
-			ret = i->acs_enabled(dev, acs_flags);
-			if (ret >= 0)
-				return ret;
-		}
-	}
-
-	return -ENOTTY;
-}
-
 /* Config space offset of Root Complex Base Address register */
 #define INTEL_LPC_RCBA_REG 0xf0
 /* 31:14 RCBA address */
@@ -4149,23 +4185,6 @@ static const struct pci_dev_enable_acs {
 	{ 0 }
 };
 
-void pci_dev_specific_enable_acs(struct pci_dev *dev)
-{
-	const struct pci_dev_enable_acs *i;
-	int ret;
-
-	for (i = pci_dev_enable_acs; i->enable_acs; i++) {
-		if ((i->vendor == dev->vendor ||
-		     i->vendor == (u16)PCI_ANY_ID) &&
-		    (i->device == dev->device ||
-		     i->device == (u16)PCI_ANY_ID)) {
-			ret = i->enable_acs(dev);
-			if (ret >= 0)
-				return;
-		}
-	}
-}
-
 /*
  * The PCI capabilities list for Intel DH895xCC VFs (device id 0x0443) with
  * QuickAssist Technology (QAT) is prematurely terminated in hardware.  The
@@ -4250,3 +4269,5 @@ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
 	}
 }
 DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x443, quirk_intel_qat_vf_cap);
+
+#endif /* CONFIG_PCI_MSM */
