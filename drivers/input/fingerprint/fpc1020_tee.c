@@ -61,7 +61,6 @@ struct fpc1020_data {
  	bool report_key_events;
 
 	int irq_gpio;
-	int fp_id_gpio; //do I need this ??
 	int wakeup_enabled;
 };
 
@@ -407,55 +406,54 @@ static int fpc1020_get_fp_id_tee(struct fpc1020_data *fpc1020)
 	struct device_node *np = dev->of_node;
 	int error, pull_up_value, pull_down_value;
 	int fp_id = FP_ID_UNKNOWN;
+	int fp_id_gpio = of_get_named_gpio(np, "fpc,fp-id-gpio", 0);
 
-	fpc1020->fp_id_gpio = of_get_named_gpio(np, "fpc,fp-id-gpio", 0);
-
-	if (fpc1020->fp_id_gpio < 0) {
+	if (fp_id_gpio < 0) {
 		dev_err(dev, "failed to get '%s'\n", "fpc,fp-id-gpio");
 		return fp_id;
 	}
 
-	if (gpio_is_valid(fpc1020->fp_id_gpio)) {
-		error = devm_gpio_request_one(fpc1020->dev, fpc1020->fp_id_gpio,
+	if (gpio_is_valid(fp_id_gpio)) {
+		error = devm_gpio_request_one(fpc1020->dev, fp_id_gpio,
 					      GPIOF_IN, "fpc1020_fp_id");
 		if (error < 0) {
 			dev_err(dev,
 				"Failed to request fpc fp_id_gpio %d, error %d\n",
-				fpc1020->fp_id_gpio, error);
+				fp_id_gpio, error);
 			return fp_id;
 		}
 
-		error = gpio_direction_output(fpc1020->fp_id_gpio, 1);
+		error = gpio_direction_output(fp_id_gpio, 1);
 		if (error) {
 			dev_err(fpc1020->dev,
 				"gpio_direction_output (fp_id_gpio = 1) failed.\n");
 			return fp_id;
 		}
 		usleep_range(2000, 3000); /* 2000us abs min. */
-		error = gpio_direction_input(fpc1020->fp_id_gpio);
+		error = gpio_direction_input(fp_id_gpio);
 		if (error) {
 			dev_err(fpc1020->dev,
 				"gpio_direction_input (fp_id_gpio) failed.\n");
 			return fp_id;
 		}
 		usleep_range(2000, 3000); /* 2000us abs min. */
-		pull_up_value = gpio_get_value(fpc1020->fp_id_gpio);
+		pull_up_value = gpio_get_value(fp_id_gpio);
 		usleep_range(2000, 3000); /* 2000us abs min. */
-		error = gpio_direction_output(fpc1020->fp_id_gpio, 0);
+		error = gpio_direction_output(fp_id_gpio, 0);
 		if (error) {
 			dev_err(fpc1020->dev,
 				"gpio_direction_output (fp_id_gpio = 0) failed.\n");
 			return fp_id;
 		}
 		usleep_range(2000, 3000); /* 2000us abs min. */
-		error = gpio_direction_input(fpc1020->fp_id_gpio);
+		error = gpio_direction_input(fp_id_gpio);
 		if (error) {
 			dev_err(fpc1020->dev,
 				"gpio_direction_input (fp_id_gpio) failed.\n");
 			return fp_id;
 		}
 		usleep_range(2000, 3000); /* 2000us abs min. */
-		pull_down_value = gpio_get_value(fpc1020->fp_id_gpio);
+		pull_down_value = gpio_get_value(fp_id_gpio);
 		usleep_range(2000, 3000); /* 2000us abs min. */
 		if ((pull_up_value == pull_down_value) && (pull_up_value == 0)) {
 			fp_id = FP_ID_LOW_0;
