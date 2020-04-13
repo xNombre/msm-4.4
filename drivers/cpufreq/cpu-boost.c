@@ -39,10 +39,8 @@ module_param(dynamic_stune_boost, uint, 0644);
 static void do_dynamic_stune_boost_rem(struct work_struct *work)
 {
 	/* Reset dynamic stune boost value to the default value */
-	if (stune_boost_active) {
-		reset_stune_boost("top-app", boost_slot);
-		stune_boost_active = false;
-	}
+	reset_stune_boost("top-app", boost_slot);
+	stune_boost_active = false;
 }
 
 static void do_input_boost(struct work_struct *work)
@@ -51,15 +49,12 @@ static void do_input_boost(struct work_struct *work)
 
 	cancel_delayed_work_sync(&dynamic_stune_boost_rem);
 
-	if (stune_boost_active) {
-		reset_stune_boost("top-app", boost_slot);
-		stune_boost_active = false;
-	}
-
 	/* Set dynamic stune boost value */
-	ret = do_stune_boost("top-app", dynamic_stune_boost, &boost_slot);
-	if (!ret)
-		stune_boost_active = true;
+	if (!stune_boost_active) {
+		ret = do_stune_boost("top-app", dynamic_stune_boost, &boost_slot);
+		if (!ret)
+			stune_boost_active = true;
+	}
 
 	queue_delayed_work(cpu_boost_wq, &dynamic_stune_boost_rem,
 					msecs_to_jiffies(dynamic_stune_boost_ms));
