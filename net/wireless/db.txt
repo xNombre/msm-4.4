@@ -15,6 +15,11 @@ country 00:
 	# IEEE 802.11ad (60GHz), channels 1..3
 	(57240 - 63720 @ 2160), (0)
 
+country AD: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
+
 
 country AE: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -28,6 +33,13 @@ country AF: DFS-ETSI
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
 	(5490 - 5710 @ 160), (30), DFS
+
+country AG: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country AI: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -55,7 +67,7 @@ country AN: DFS-ETSI
 	(5735 - 5875 @ 80), (14)
 
 country AR:
-	(2402 - 2482 @ 40), (36)
+	(2402 - 2482 @ 40), (30)
 	(5170 - 5250 @ 80), (23), AUTO-BW
 	(5250 - 5330 @ 80), (36), AUTO-BW
 	(5490 - 5590 @ 80), (36)
@@ -95,6 +107,13 @@ country AW: DFS-ETSI
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
 	(5490 - 5710 @ 160), (30), DFS
+
+country AX: DFS-FCC
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (24), DFS
+	(5735 - 5850 @ 80), (30)
 
 country AZ: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -212,7 +231,8 @@ country CA: DFS-FCC
 	(2402 - 2472 @ 40), (30)
 	(5170 - 5250 @ 80), (24), AUTO-BW
 	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
-	(5490 - 5730 @ 160), (24), DFS
+	(5490 - 5590 @ 80), (24), DFS
+	(5650 - 5730 @ 80), (24), DFS
 	(5735 - 5835 @ 80), (30)
 	# 60 gHz band channels 1-3
 	(57240 - 63720 @ 2160), (40)
@@ -248,6 +268,19 @@ country CL:
 	# 60 gHz band channels 1-3
 	(57240 - 63720 @ 2160), (50), NO-OUTDOOR
 
+country CK: DFS-FCC
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (24), DFS
+	(5735 - 5835 @ 80), (30)
+
+country CM: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5710 @ 160), (30), DFS
+
 country CN: DFS-FCC
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23), AUTO-BW
@@ -265,10 +298,10 @@ country CO: DFS-FCC
 
 country CR: DFS-FCC
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (24), AUTO-BW
-	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
-	(5490 - 5730 @ 160), (24), DFS
-	(5735 - 5835 @ 80), (30)
+	(5170 - 5250 @ 20), (24)
+	(5250 - 5330 @ 20), (24), DFS
+	(5490 - 5730 @ 20), (24), DFS
+	(5735 - 5835 @ 20), (30)
 	# 60 gHz band channels 1-3
 	(57240 - 63720 @ 2160), (30)
 
@@ -331,9 +364,10 @@ country DM: DFS-FCC
 
 country DO: DFS-FCC
 	(2402 - 2472 @ 40), (30)
-	(5170 - 5250 @ 80), (23), AUTO-BW
-	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
-	(5735 - 5835 @ 80), (30)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (24), DFS
+	(5735 - 5850 @ 80), (30)
 
 country DZ: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -361,8 +395,8 @@ country EE: DFS-ETSI
 
 country EG: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 40), (23)
-	(5250 - 5330 @ 40), (23), DFS
+	(5170 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
 
 country ES: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -388,12 +422,26 @@ country FI: DFS-ETSI
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
 
+country FK: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
 country FM: DFS-FCC
 	(2402 - 2472 @ 40), (30)
 	(5170 - 5250 @ 80), (24), AUTO-BW
 	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
 	(5490 - 5730 @ 160), (24), DFS
 	(5735 - 5835 @ 80), (30)
+
+country FO: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country FR: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -422,10 +470,18 @@ country GD: DFS-FCC
 
 country GE: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (18), AUTO-BW
-	(5250 - 5330 @ 80), (18), DFS, AUTO-BW
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5710 @ 160), (30), DFS
 
 country GF: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
+country GG: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
@@ -494,6 +550,14 @@ country HK: DFS-FCC
 	# 60 gHz band channels 1-4, ref: FCC/EU
 	(57240 - 65880 @ 2160), (40)
 
+country HM: DFS-FCC
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5590 @ 80), (24), DFS
+	(5650 - 5730 @ 80), (24), DFS
+	(5735 - 5835 @ 80), (30)
+
 country HN:
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5330 @ 160), (24)
@@ -529,8 +593,8 @@ country HU: DFS-ETSI
 
 country ID:
 	# ref: http://www.postel.go.id/content/ID/regulasi/standardisasi/kepdir/bwa%205,8%20ghz.pdf
-	(2402 - 2482 @ 40), (30)
-	(5735 - 5815 @ 20), (30)
+	(2402 - 2482 @ 40), (20)
+	(5735 - 5815 @ 80), (20)
 
 country IE: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -547,6 +611,13 @@ country IL: DFS-ETSI
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
 	# 60 gHz band channels 1-4, base on Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
+
+country IM: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country IN: DFS-ETSI
 	(2402 - 2482 @ 40), (30)
@@ -579,6 +650,13 @@ country IT: DFS-ETSI
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
 
+country JE: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
 country JM: DFS-FCC
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (24), AUTO-BW
@@ -605,9 +683,10 @@ country JP: DFS-JP
 
 country KE: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (23)
-	(5490 - 5570 @ 80), (30), DFS
-	(5735 - 5775 @ 40), (23)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country KH: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -623,11 +702,11 @@ country KN: DFS-FCC
 	(5735 - 5815 @ 80), (30)
 
 country KR: DFS-ETSI
-	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (20), AUTO-BW
-	(5250 - 5330 @ 80), (20), DFS, AUTO-BW
-	(5490 - 5730 @ 160), (30), DFS
-	(5735 - 5835 @ 80), (30)
+	(2402 - 2482 @ 40), (23)
+	(5170 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (23), DFS
+	(5735 - 5835 @ 80), (23)
 	# 60 GHz band channels 1-4,
 	# ref: http://www.law.go.kr/%ED%96%89%EC%A0%95%EA%B7%9C%EC%B9%99/%EB%AC%B4%EC%84%A0%EC%84%A4%EB%B9%84%EA%B7%9C%EC%B9%99
 	(57240 - 65880 @ 2160), (43)
@@ -645,7 +724,10 @@ country KY: DFS-FCC
 	(5735 - 5835 @ 80), (30)
 
 country KZ:
-	(2402 - 2482 @ 40), (20)
+	(2402 - 2482 @ 40), (23)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5710 @ 160), (23), DFS
 
 country LB: DFS-FCC
 	(2402 - 2482 @ 40), (20)
@@ -656,7 +738,7 @@ country LB: DFS-FCC
 
 country LC: DFS-FCC
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (20), AUTO-BW
+	(5170 - 5250 @ 80), (23), AUTO-BW
 	(5250 - 5330 @ 80), (30), DFS, AUTO-BW
 	(5490 - 5710 @ 160), (30), DFS
 	(5735 - 5815 @ 80), (30)
@@ -758,7 +840,7 @@ country MK: DFS-ETSI
 	(5490 - 5730 @ 160), (30), DFS
 	(5735 - 5875 @ 80), (14)
 
-country MM: DFS-ETSI
+country MM:
 	(2402 - 2482 @ 40), (20)
 	(5735 - 5835 @ 80), (30)
 
@@ -795,6 +877,13 @@ country MR: DFS-ETSI
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
 	(5490 - 5710 @ 160), (30), DFS
+
+country MS: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country MT: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -849,6 +938,23 @@ country NA: DFS-ETSI
 	(5490 - 5730 @ 160), (30), DFS
 	(5735 - 5835 @ 80), (33)
 
+country NC: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
+country NF: DFS-FCC
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5590 @ 80), (24), DFS
+	(5650 - 5730 @ 80), (24), DFS
+	(5735 - 5835 @ 80), (30)
+	# 60 gHz band channels 1-4
+	(57240 - 65880 @ 2160), (43), NO-OUTDOOR
+
 country NG: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5250 - 5330 @ 80), (30), DFS
@@ -886,6 +992,13 @@ country NP:
 	(5170 - 5330 @ 160), (20)
 	(5735 - 5835 @ 80), (20)
 
+country NU: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
 country NZ: DFS-FCC
 	(2402 - 2482 @ 40), (30)
 	(5170 - 5250 @ 80), (24), AUTO-BW
@@ -903,9 +1016,10 @@ country OM: DFS-ETSI
 
 country PA:
 	(2402 - 2472 @ 40), (36)
-	(5170 - 5250 @ 80), (23), AUT0-BW
-	(5250 - 5330 @ 80), (30), AUTO-BW
-	(5735 - 5835 @ 80), (36)
+	(5170 - 5250 @ 80), (30), AUT0-BW
+	(5250 - 5330 @ 80), (24), AUTO-BW
+	(5490 - 5730 @ 160), (24),
+	(5735 - 5835 @ 80), (30)
 
 country PE: DFS-FCC
 	(2402 - 2482 @ 40), (20)
@@ -964,6 +1078,13 @@ country PR: DFS-FCC
 	(5490 - 5730 @ 160), (24), DFS
 	(5735 - 5835 @ 80), (30)
 
+# Public Safety FCCA, FCC4
+#  27dBm [4.9GHz 1/4 rate], 30dBm [1/2 rate], 33dBm [full rate], and 5GHz same as FCC1
+#  db.txt cannot express the limitation on 5G so disable all 5G channels for FCC4
+country PS: DFS-FCC
+	(2402 - 2472 @ 40), (30)
+	(4940 - 4990 @ 40), (33)
+
 country PT: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
@@ -989,9 +1110,12 @@ country PY: DFS-FCC
 	# 60 gHz band channels 1-3, FCC
 	(57240 - 63720 @ 2160), (40)
 
-country QA:
+country QA: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5735 - 5835 @ 80), (30)
+	(5170 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (20), DFS
+	(5735 - 5875 @ 80), (20)
 
 country RE: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -1036,9 +1160,10 @@ country RW: DFS-FCC
 
 country SA: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5330 @ 160), (23)
-	(5490 - 5710 @ 160), (30)
-	(5735 - 5835 @ 80), (30), DFS
+	(5170 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5815 @ 80), (30)
 
 country SE: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -1058,6 +1183,13 @@ country SG: DFS-FCC
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40), NO-OUTDOOR
 
+country SH: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
 country SI: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
@@ -1067,6 +1199,14 @@ country SI: DFS-ETSI
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
 
+country SJ: DFS-FCC
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5590 @ 80), (24), DFS
+	(5650 - 5730 @ 80), (24), DFS
+	(5735 - 5835 @ 80), (30)
+
 country SK: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
@@ -1075,6 +1215,13 @@ country SK: DFS-ETSI
 	(5735 - 5875 @ 80), (14)
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57000 - 66000 @ 2160), (40)
+
+country SM: DFS-FCC
+	(2402 - 2472 @ 40), (30)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (24), DFS
+	(5735 - 5835 @ 80), (30)
 
 country SN:
 	(2402 - 2482 @ 40), (20)
@@ -1088,11 +1235,25 @@ country SR: DFS-ETSI
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
 	(5490 - 5710 @ 160), (30), DFS
 
+country ST: DFS-FCC
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (24), DFS
+	(5735 - 5835 @ 80), (30)
+
 country SV: DFS-FCC
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 20), (23)
 	(5250 - 5330 @ 20), (23), DFS
 	(5735 - 5835 @ 20), (30)
+
+country SX: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country TC: DFS-FCC
 	(2402 - 2482 @ 40), (20)
@@ -1106,6 +1267,13 @@ country TD: DFS-ETSI
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
 	(5490 - 5710 @ 160), (30), DFS
+
+country TF: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country TG: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
@@ -1136,8 +1304,8 @@ country TR: DFS-ETSI
 
 country TT: DFS-FCC
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (24)
-	(5250 - 5330 @ 80), (24), DFS
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
 	(5490 - 5730 @ 160), (24), DFS
 	(5735 - 5835 @ 80), (30)
 	# 60 gHz band channels 1-3, FCC
@@ -1165,10 +1333,10 @@ country TZ:
 # disputable definitions there.
 country UA: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
-	(5170 - 5250 @ 80), (20), AUTO-BW
-	(5250 - 5330 @ 80), (20), DFS, AUTO-BW
-	(5490 - 5670 @ 160), (20), DFS
-	(5735 - 5835 @ 80), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
+	(5490 - 5710 @ 160), (24), DFS
+	(5735 - 5835 @ 80), (24)
 	# 60 gHz band channels 1-4, ref: Etsi En 302 567
 	(57240 - 65880 @ 2160), (20)
 
@@ -1181,7 +1349,7 @@ country UG: DFS-FCC
 
 country US: DFS-FCC
 	(2402 - 2472 @ 40), (30)
-	(5170 - 5250 @ 80), (30), AUTO-BW
+	(5170 - 5250 @ 80), (24), AUTO-BW
 	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
 	(5490 - 5730 @ 160), (24), DFS
 	(5735 - 5835 @ 80), (30)
@@ -1189,6 +1357,13 @@ country US: DFS-FCC
 	# reference: http://cfr.regstoday.com/47cfr15.aspx#47_CFR_15p255
 	# channels 1,2,3,4,5,6 EIRP=40dBm(43dBm peak)
 	(57240 - 70200 @ 2160), (40)
+
+country UM: DFS-FCC
+	(2402 - 2472 @ 40), (30)
+	(5170 - 5250 @ 80), (24), AUTO-BW
+	(5250 - 5330 @ 80), (24), DFS, AUTO-BW
+	(5490 - 5730 @ 160), (24), DFS
+	(5735 - 5835 @ 80), (30)
 
 country UY: DFS-FCC
 	(2402 - 2482 @ 40), (20)
@@ -1203,6 +1378,13 @@ country UZ: DFS-ETSI
 	(5170 - 5250 @ 80), (23), AUTO-BW
 	(5250 - 5330 @ 80), (23), DFS, AUTO-BW
 
+country VA: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
+
 country VC: DFS-ETSI
 	(2402 - 2482 @ 40), (20)
 	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
@@ -1215,6 +1397,13 @@ country VE: DFS-FCC
 	(5170 - 5250 @ 80), (23), AUTO-BW
         (5250 - 5330 @ 80), (23), DFS, AUTO-BW
 	(5735 - 5835 @ 80), (30)
+
+country VG: DFS-ETSI
+	(2402 - 2482 @ 40), (20)
+	(5170 - 5250 @ 80), (23), AUTO-BW, NO-OUTDOOR
+	(5250 - 5330 @ 80), (23), DFS, AUTO-BW, NO-OUTDOOR
+	(5490 - 5730 @ 160), (30), DFS
+	(5735 - 5875 @ 80), (14)
 
 country VI: DFS-FCC
 	(2402 - 2472 @ 40), (30)
@@ -1250,13 +1439,6 @@ country WS: DFS-ETSI
 	(5170 - 5250 @ 40), (23), NO-OUTDOOR
 	(5250 - 5330 @ 40), (23), DFS, NO-OUTDOOR
 	(5490 - 5710 @ 40), (30), DFS
-
-country XA: DFS-JP
-	(2402 - 2482 @ 40), (20)
-	(2474 - 2494 @ 20), (20), NO-OFDM
-	(5170 - 5250 @ 80), (20), NO-IR, AUTO-BW, NO-OUTDOOR
-	(5250 - 5330 @ 80), (20), DFS, AUTO-BW, NO-OUTDOOR
-	(5490 - 5710 @ 160), (20), DFS
 
 country YE:
 	(2402 - 2482 @ 40), (20)
