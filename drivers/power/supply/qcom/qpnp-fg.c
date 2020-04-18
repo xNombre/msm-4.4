@@ -37,6 +37,7 @@
 #include <linux/string_helpers.h>
 #include <linux/alarmtimer.h>
 #include <linux/qpnp/qpnp-revid.h>
+#include <linux/fb.h>
 
 /* Register offsets */
 
@@ -651,6 +652,7 @@ struct fg_chip {
 	int			*batt_range_pct;
 
 	struct fg_saved_data    saved_data[POWER_SUPPLY_PROP_BATTERY_TYPE + 1];
+	struct notifier_block fb_notif;
 };
 
 /* FG_MEMIF DEBUGFS structures */
@@ -4583,7 +4585,25 @@ static enum power_supply_property fg_power_props[] = {
 	POWER_SUPPLY_PROP_BATTERY_INFO_ID,
 };
 
-#define FG_RATE_LIM_MS (5 * MSEC_PER_SEC)
+static int fg_rate_limit_ms = 5;
+static int fb_notifier_callback(struct notifier_block *nb,
+		unsigned long action, void *data)
+{
+	struct fb_event *evdata = data;
+	int *blank = evdata->data;
+
+	if (action != FB_EARLY_EVENT_BLANK)
+		return 0;
+
+	if (*blank == FB_BLANK_UNBLANK) {
+		fg_rate_limit_ms = 5;
+	} else if (*blank == FB_BLANK_POWERDOWN) {
+		fg_rate_limit_ms = 10;
+	}
+
+	return 0;
+}
+
 static int fg_power_get_property(struct power_supply *psy,
 				       enum power_supply_property psp,
 				       union power_supply_propval *val)
@@ -4731,7 +4751,7 @@ static int fg_power_get_property(struct power_supply *psy,
 
 	if(ratelimited_property) {
 		sd->val = *val;
-		sd->last_req_expires = jiffies + msecs_to_jiffies(FG_RATE_LIM_MS);
+		sd->last_req_expires = jiffies + msecs_to_jiffies(fg_rate_limit_ms);
 	}
 
 	return 0;
@@ -8976,6 +8996,14 @@ static int fg_probe(struct platform_device *pdev)
 	chip->batt_range_ocv = &fg_batt_valid_ocv;
 	chip->batt_range_pct = &fg_batt_range_pct;
 	memset(chip->batt_info, INT_MAX, sizeof(chip->batt_info));
+
+	chip->fb_notif.notifier_call = fb_notifier_callback;
+	rc = fb_register_client(&chip->fb_notif);
+	if (rc) {
+		/* It's sad, but not fatal */
+		dev_err(dev, "Unable to register fb_notifier, ret: %d\n", rc);
+		rc = 0;
+	}
 
 	schedule_work(&chip->init_work);
 
