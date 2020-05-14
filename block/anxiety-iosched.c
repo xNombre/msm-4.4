@@ -13,7 +13,7 @@
 #include <linux/init.h>
 
 /* Batch this many synchronous requests at a time */
-#define	DEFAULT_SYNC_RATIO	(4)
+#define	DEFAULT_SYNC_RATIO	(2)
 
 enum {
 	SYNC,
