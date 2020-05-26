@@ -8351,6 +8351,7 @@ static int fg_hw_init(struct fg_chip *chip)
 		chip->wa_flag |= PULSE_REQUEST_WA;
 		break;
 	case PMI8996:
+		fg_reset_on_lockup = 1;
 		rc = fg_8996_hw_init(chip);
 		/* Setup workaround flag based on PMIC type */
 		if (fg_sense_type == INTERNAL_CURRENT_SENSE)
@@ -8687,6 +8688,9 @@ static int fg_detect_pmic_type(struct fg_chip *chip)
 				pmic_rev_id->pmic_subtype);
 		return -EINVAL;
 	}
+
+	if (PMI8996 == pmic_rev_id->pmic_subtype)
+		fg_reset_on_lockup = 1;
 
 	return 0;
 }
