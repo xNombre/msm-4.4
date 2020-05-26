@@ -8069,6 +8069,7 @@ static int fg_common_hw_init(struct fg_chip *chip)
 	int rc;
 	int resume_soc_raw;
 	u8 val;
+	u8 buf[2];
 
 	update_iterm(chip);
 	update_cutoff_voltage(chip);
@@ -8212,6 +8213,23 @@ static int fg_common_hw_init(struct fg_chip *chip)
 		pr_err("failed to write to 0x4B3 rc=%d\n", rc);
 		return rc;
 	}
+
+	/*
+	 * At the end of this function set cut off SOC Ki coefficient from 32 to 96,
+	 * 0x408 offset 0 and 1 to 0xAA00
+	 */
+	buf[0] = 0x00;
+	buf[1] = 0xAA;
+	rc = fg_mem_write(chip, buf, 0x408, 2, 0, 1);
+	if (rc < 0)
+		pr_err("Error in configuring Sram cut off soc thread, rc=%d\n", rc);
+
+	/* Modify cut off current to 200mA. */
+	buf[0] = 0x1F;
+	buf[1] = 0x5;
+	rc = fg_mem_write(chip, buf, 0x410, 2, 0, 1);
+	if (rc < 0)
+		pr_err("Error in configuring Sram cut off current thread, rc=%d\n", rc);
 
 	return 0;
 }
