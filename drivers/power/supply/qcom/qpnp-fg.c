@@ -1348,10 +1348,15 @@ static int fg_check_ima_exception(struct fg_chip *chip, bool check_hw_sts)
 
 	if (run_err_clr_seq) {
 		ret = fg_run_iacs_clear_sequence(chip);
-		if (!ret)
-			return -EAGAIN;
-		else
+		if (ret) {
 			pr_err("Error clearing IMA exception ret=%d\n", ret);
+			return ret;
+		}
+
+		if (check_hw_sts)
+			return 0;
+		else
+			return -EAGAIN;
 	}
 
 	return rc;
