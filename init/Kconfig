@@ -1072,7 +1072,7 @@ config MEMCG
 
 config MEMCG_SWAP
 	bool "Memory Resource Controller Swap Extension"
-	depends on MEMCG && SWAP
+	depends on MEMCG && (SWAP || ZRAM)
 	help
 	  Add swap management feature to memory resource controller. When you
 	  enable this, you can limit mem+swap usage per cgroup. In other words,
