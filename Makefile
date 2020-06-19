@@ -656,6 +656,8 @@ ifeq ($(cc-name),clang)
 ifeq ($(ld-name),lld)
 KBUILD_CFLAGS	+= -fuse-ld=lld
 LDFLAGS += -O2
+# Set O3 optimization level for LTO
+LDFLAGS		+= --plugin-opt=O3
 endif
 KBUILD_CPPFLAGS	+= -Qunused-arguments
 endif
