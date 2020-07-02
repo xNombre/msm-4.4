@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 4.4.224 Kernel Configuration
+# Linux/arm64 4.4.227 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -121,7 +121,7 @@ CONFIG_RCU_NOCB_CPU=y
 # CONFIG_RCU_NOCB_CPU_ZERO is not set
 CONFIG_RCU_NOCB_CPU_ALL=y
 # CONFIG_RCU_EXPEDITE_BOOT is not set
-CONFIG_RCU_NOCB_CPU_BIND_LP=y
+# CONFIG_RCU_NOCB_CPU_BIND_LP is not set
 CONFIG_BUILD_BIN2C=y
 CONFIG_IKCONFIG=y
 CONFIG_IKCONFIG_PROC=y
