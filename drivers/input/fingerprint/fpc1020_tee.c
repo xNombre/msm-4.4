@@ -256,6 +256,10 @@ static ssize_t enable_wakeup_store(struct device *dev,
 	if (sscanf(buf, "%u", &i) == 1 && i < 2) {
 		f->wakeup_enabled = (i == 1);
 
+		// Don't disable fpc irq when screen is on
+		if(f->screen_off)
+			set_fpc_irq(f, f->wakeup_enabled);
+
 		return count;
 	} else
 		return -EINVAL;
@@ -316,8 +320,12 @@ static int fb_notifier_callback(struct notifier_block *nb,
 
 	if (*blank == FB_BLANK_UNBLANK) {
 		f->screen_off = false;
+		if(!f->wakeup_enabled)
+			set_fpc_irq(f, 1);
 	} else if (*blank == FB_BLANK_POWERDOWN) {
 		f->screen_off = true;
+		if(!f->wakeup_enabled)
+			set_fpc_irq(f, 0);
 	}
 
 	return 0;
