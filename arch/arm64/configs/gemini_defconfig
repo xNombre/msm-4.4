@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 4.4.227 Kernel Configuration
+# Linux/arm64 4.4.232 Kernel Configuration
 #
 CONFIG_ARM64=y
 CONFIG_64BIT=y
@@ -2981,6 +2981,7 @@ CONFIG_HID_GENERIC=y
 # CONFIG_HID_MICROSOFT is not set
 # CONFIG_HID_MONTEREY is not set
 # CONFIG_HID_MULTITOUCH is not set
+# CONFIG_HID_NINTENDO is not set
 # CONFIG_HID_NTRIG is not set
 # CONFIG_HID_ORTEK is not set
 # CONFIG_HID_PANTHERLORD is not set
